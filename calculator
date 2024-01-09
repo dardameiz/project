@@ -1,0 +1,60 @@
+#include <stdio.h>
+
+int main(void){
+
+int op;
+double num1, num2;
+double result = 0;
+
+     while(1) {
+        printf("1. Addition +\n");
+        printf("2. Subtraction -\n");
+        printf("3. Multiplication *\n");
+        printf("4. Division /\n");
+        printf("Choose a command what would you like to do from the above list: \n");
+        scanf("%d", &op);
+        printf("Add your first number: \n");
+        scanf("%lf", &num1);
+        printf("Add your second number: \n");
+        scanf("%lf", &num2);
+
+        switch(op) {
+        case 1:
+           result = num1 + num2;
+           break;
+
+        case 2:
+            result = num1 - num2;
+            break;
+
+        case 3:
+            result = num1 * num2;
+            break;
+
+        case 4:
+            while (num2 == 0) {
+                printf("Please give a number that is not 0\n");
+                scanf("%lf", &num2);
+            }
+            result = num1 / num2;
+            break;
+
+        default:
+            printf("Choose a number between 1 and 4\n");
+            break;
+        }
+
+        if (op == 1) {
+            printf("Your result is: %lf + %lf = %lf\n", num1, num2, result);
+        } else if (op == 2) {
+            printf("Your result is: %lf - %lf = %lf\n", num1, num2, result);
+        } else if (op == 3) {
+            printf("Your result is: %lf * %lf = %lf\n", num1, num2, result);
+        } else if (op == 4) {
+            printf("Your result is: %lf / %lf = %lf\n", num1, num2, result);
+        }
+        return 0;
+        }
+
+
+}
