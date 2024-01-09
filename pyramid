@@ -1,0 +1,44 @@
+#include <stdio.h>
+
+int main(void)
+{
+    int i, j, k, d, c, h, o;
+    int height;
+
+    // Get the height of the pyramid from the user
+    printf("Add the wanted height of the pyramid: \n");
+    scanf("%i", &height);
+
+    // Outer loop: Iterate from 0 to the specified height
+    for (i = 0; i <= height; i++)
+    {
+        // Inner loop 1: Print spaces before the hashes on each line
+        for (j = 0; j <= height - i; j++)
+        {
+            printf(" ");
+        }
+
+        // Inner loop 2: Print the first set of hashes on each line
+        for (k = 0; k < i; k++)
+        {
+            printf("#");
+        }
+
+        // Inner loop 3: Print the second set of hashes on each line (excluding the top level)
+        for (c = 0; c < i - 1; c++)
+        {
+            printf("#");
+        }
+
+        // Inner loop 4: Print spaces after the hashes on each line
+        for (h = 0; h <= height - i; h++)
+        {
+            printf(" ");
+        }
+
+        // Move to the next line after completing each level of the pyramid
+        printf("\n");
+    }
+
+    // The program ends after printing the pyramid
+}
