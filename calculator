@@ -1,49 +1,59 @@
 #include <stdio.h>
 
-int main(void){
+int main(void) {
+    int op;
+    double num1, num2;
+    double result = 0;
 
-int op;
-double num1, num2;
-double result = 0;
-
-     while(1) {
+    // Infinite loop to keep the calculator running until manually terminated
+    while (1) {
+        // Displaying menu options
         printf("1. Addition +\n");
         printf("2. Subtraction -\n");
         printf("3. Multiplication *\n");
         printf("4. Division /\n");
-        printf("Choose a command what would you like to do from the above list: \n");
+        printf("Choose a command from the above list: \n");
+
+        // User input for the operation choice
         scanf("%d", &op);
+
+        // User input for the first number
         printf("Add your first number: \n");
         scanf("%lf", &num1);
+
+        // User input for the second number
         printf("Add your second number: \n");
         scanf("%lf", &num2);
 
-        switch(op) {
-        case 1:
-           result = num1 + num2;
-           break;
+        // Switch statement to perform the selected operation
+        switch (op) {
+            case 1:
+                result = num1 + num2;
+                break;
 
-        case 2:
-            result = num1 - num2;
-            break;
+            case 2:
+                result = num1 - num2;
+                break;
 
-        case 3:
-            result = num1 * num2;
-            break;
+            case 3:
+                result = num1 * num2;
+                break;
 
-        case 4:
-            while (num2 == 0) {
-                printf("Please give a number that is not 0\n");
-                scanf("%lf", &num2);
-            }
-            result = num1 / num2;
-            break;
+            case 4:
+                // Check for division by zero
+                while (num2 == 0) {
+                    printf("Please give a number that is not 0\n");
+                    scanf("%lf", &num2);
+                }
+                result = num1 / num2;
+                break;
 
-        default:
-            printf("Choose a number between 1 and 4\n");
-            break;
+            default:
+                printf("Choose a number between 1 and 4\n");
+                break;
         }
 
+        // Displaying the result based on the selected operation
         if (op == 1) {
             printf("Your result is: %lf + %lf = %lf\n", num1, num2, result);
         } else if (op == 2) {
@@ -53,8 +63,8 @@ double result = 0;
         } else if (op == 4) {
             printf("Your result is: %lf / %lf = %lf\n", num1, num2, result);
         }
+
+        // Exit the program after displaying the result (this might be unintentional)
         return 0;
-        }
-
-
+    }
 }
