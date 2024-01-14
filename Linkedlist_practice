@@ -30,16 +30,15 @@ node_t *create_new_node(int value) {
 
 int main() {
     node_t *tmp;
-    node_t *head;
+    node_t *head = NULL;
 
-    tmp = create_new_node(32);
-    head = tmp;
-    tmp = create_new_node(8);
-    tmp->next = head;
-    head = tmp;
-    tmp = create_new_node(34);
-    tmp->next = head;
-    head = tmp;
+
+    for (int i=0; i <25; i++) {
+        tmp = create_new_node(i);
+        tmp->next = head;
+        head = tmp;
+
+    }
 
     printlist(head);
 
