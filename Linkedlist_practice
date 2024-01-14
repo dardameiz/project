@@ -1,0 +1,55 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+struct node {
+    int value;
+    struct node *next;
+};
+//this is to keep the code simpler and not to type all the time struct
+typedef struct node node_t;
+
+
+void printlist(node_t *head) {
+    node_t *temporary = head;
+
+    while(temporary != NULL) {
+        printf("%d - ", temporary->value);
+        temporary = temporary->next;
+    }
+        printf("\n");
+}
+
+node_t *create_new_node(int value) {
+    node_t *result = malloc(sizeof(node_t));
+    result->value = value;
+    result->next = NULL;
+    return result;
+
+
+int main() {
+    node_t *l1, l2, l3;
+    node_t *head;
+
+    l1 = malloc(sizeof(node_t));
+    l1->value = 83;
+    l2.value = 2;
+    l3.value = 140;
+
+    //we will link them up
+    head = &l1;
+    l3.next = NULL;
+    l2.next = &l3;
+    l1->next = &l2;
+
+    node_t l4;
+    l4.value = 13;
+    l4.next = &l3;
+    l2.next = &l4;
+
+    head = head->next;
+
+    printlist(head);
+
+    return 0;
+}
+
