@@ -1,0 +1,560 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <time.h>
+#include <string.h>
+#include <math.h>
+#include <stdarg.h>
+#include <float.h>
+
+
+
+#define ArraySize 100000
+
+// Swap function
+void swap(int *a, int *b) {
+    int tmp = *a;                               // Store the value at the memory location pointed by 'a'.
+    *a = *b;                                    // Assign the value at the memory location pointed by 'b' to 'a'.
+    *b = tmp;                                   // Assign the stored value to the memory location pointed by 'b'.
+}
+
+// Bubble sort algorithm
+void bubble_sort(int arr[], int n) {
+    for (int i = 0; i < n; i++) {               // Outer loop: Iterate through each element in the array.
+        for (int j = 0; j < n - 1; j++) {       // Inner loop: Iterate through elements in the array up to the last unsorted element.
+            if (arr[j] > arr[j + 1]) {          // If the current element is greater than the next element, swap them.
+                swap(&arr[j], &arr[j + 1]);     // Call the swap function.
+            }
+        }
+    }
+}
+
+// Selection sort algorithm
+void selection_sort(int arr[], int n) {
+    for (int i = 0; i < n - 1; i++) {           // Outer loop: Iterate through each element in the array except the last one.
+        for (int j = i + 1; j < n; j++) {       // Inner loop: Iterate through the unsorted portion of the array.
+            if (arr[j] < arr[i]) {              // If the current unsorted element is smaller than the minimum, swap them.
+                swap(&arr[j], &arr[i]);         // Call the swap function.
+            }
+        }
+    }
+}
+
+// Insertion sort algorithm
+void insertion_sort(int arr[], int n) {
+    int i, key, j;                              // Declare variables for the loop and key value.
+
+    for (i = 1; i < n; i++) {                   // Outer loop: Iterate through each element starting from the second one.
+        key = arr[i];                           // Store the current element to be inserted.
+        j = i - 1;                              // Initialize the index to compare with.
+
+        while (j >= 0 && arr[j] > key) {
+                                                // Inner loop: Shift elements greater than the key to the right.
+                                                // Condition 1 (j >= 0): Ensure that the array index is valid.
+                                                // Condition 2 (arr[j] > key): Check if the current element is greater than the key.
+            arr[j + 1] = arr[j];                // Move the greater element to the right.
+            j--;                                // Decrement the index to compare with the previous element.
+        }
+
+        arr[j + 1] = key;                       // Insert the key into its correct position.
+    }
+}
+
+// Shell sort algorithm
+void shell_sort(int arr[], int n) {
+    for (int gap = n / 2; gap > 0; gap /= 2) {                          // Iterate over gap sizes, reducing it by half each time
+        for (int i = gap; i < n; i++) {                                 // Iterate over elements starting from the current gap
+            int temp = arr[i];                                          // Store the current element to be inserted later
+            int j;
+
+            for (j = i; j >= gap && arr[j - gap] > temp; j -= gap) {
+                arr[j] = arr[j - gap];                                  // Shift elements to the right until a suitable position is found
+            }
+            arr[j] = temp;                                              // Insert the stored element into the correct position
+        }
+    }
+}
+
+// Merge sort algorithm
+void merge(int arr[], int l, int m, int r) {    // Parameters l - left, m - middle, r - right
+    int i, j, k;                                // Declare variables
+    int n1 = m - l + 1;                         // Number of elements in the array of the left side
+    int n2 = r - m;                             // Number of elements in the array of the right side
+
+    int L[n1], R[n2];                           // Create temporary arrays for left and right side
+
+    for (i = 0; i < n1; i++) {                  // Copy the data to a left temporary array
+        L[i] = arr[l + i];
+    }
+    for (j = 0; j < n2; j++) {                  // Copy the data to the right temporary array
+        R[j] = arr[m + 1 + j];
+    }
+
+    i = 0;                                      // Initialize i index
+    j = 0;                                      // Initialize j index
+    k = l;                                      // l is assigned to k
+
+    while (i < n1 && j < n2) {                  // While i is in the range of the left temp array and j is in the range of the right temp array
+        if (L[i] <= R[j]) {                     // First element of left array is smaller or equal to the first element of the right array
+            arr[k] = L[i];                      // Then the first element will be of the original array is L[i]
+            i++;                                // Then i is incremented
+        } else {
+            arr[k] = R[j];                      // Otherwise the first element of the original array is R[j) from the right side
+            j++;                                // Then j is incremented
+        }
+        k++;
+    }
+
+    while (i < n1) {                            // Copy the remaining elements from the left temp array to the original one
+        arr[k] = L[i];
+        i++;
+        k++;
+    }
+    while (j < n2) {                            // Copy the remaining elements from the right temp array to the original one
+        arr[k] = R[j];
+        j++;
+        k++;
+    }
+}
+
+
+void merge_sort(int arr[], int l, int r) {      // l is for left index, and r is the right index of the sub-array to be sorted
+    if (l < r) {                                // Same as (l+r)/2, but avoids overflow for large l and r
+        int m = l + (r - l) / 2;
+
+
+        merge_sort(arr, l, m);                  // Sort first and second halves
+        merge_sort(arr, m + 1, r);
+
+
+        merge(arr, l, m, r);                    // Merge the sorted halves
+    }
+}
+
+
+
+// Quick sort algorithm
+int partition(int arr[], int low, int high) {   // Function to partition the array and return the pivot index
+    int pivot = arr[high];                      // Choose the pivot element as the last element
+    int i = low - 1;                            // Initialize the index of the smaller element
+
+    for (int j = low; j < high; j++) {          // Iterate through the array
+        if (arr[j] <= pivot) {                  // If the current element is less than or equal to the pivot
+            i++;                                // Move the index of the smaller element
+            swap(&arr[i], &arr[j]);             // Swap arr[i] and arr[j]
+        }
+    }
+
+    swap(&arr[i + 1], &arr[high]);              // Swap arr[i+1] and arr[high] (or pivot)
+    return i + 1;                               // Return the pivot index
+}
+
+
+void quick_sort(int arr[], int low, int high) { // Function to implement QuickSort
+    if (low < high) {                           // Check if there are more than one element in the subarray
+                                                // Find pivot index such that elements on the left are smaller and on the right are greater
+        int pivotIndex = partition(arr, low, high);
+
+                                                // Recursively sort subarrays before and after the pivot
+        quick_sort(arr, low, pivotIndex - 1);
+        quick_sort(arr, pivotIndex + 1, high);
+    }
+}
+
+
+
+// Heap sort algorithm
+void heapify(int arr[], int n, int i) {             // Function to perform heapify
+    int largest = i;                                // Initialize largest as root
+    int left = 2 * i + 1;                           // Left child
+    int right = 2 * i + 2;                          // Right child
+
+    if (left < n && arr[left] > arr[largest])       // If left child is larger than root
+        largest = left;                             // Then largest becomes the left
+
+    if (right < n && arr[right] > arr[largest])     // If right child is larger than largest so far
+        largest = right;                            // Then largest becomes the right
+
+    if (largest != i) {                             // If largest is not root
+        int temp = arr[i];                          // Swap arr[i] and arr[largest]
+        arr[i] = arr[largest];
+        arr[largest] = temp;
+
+        heapify(arr, n, largest);                   // Recursively heapify the affected sub-tree
+    }
+}
+
+void heap_sort(int arr[], int n) {                  // Main function for heap sort
+
+    for (int i = n / 2 - 1; i >= 0; i--)            // Build a max heap
+        heapify(arr, n, i);
+
+    for (int i = n - 1; i > 0; i--) {               // Extract elements from the heap one by one
+        int temp = arr[0];                          // Swap the root (max element) with the last element
+        arr[0] = arr[i];
+        arr[i] = temp;
+
+        heapify(arr, i, 0);                         // Reduce the size of the heap and heapify the root
+    }
+}
+
+
+// Radix sort algorithm
+int get_max(int arr[], int n) {                             // A utility function to get the maximum value in arr[]
+    int max = arr[0];                                       // Initialize max as the first element of the array
+    for (int i = 1; i < n; i++)                             // Iterate through the array starting from the second element
+        if (arr[i] > max)                                   // If the current element is greater than max
+            max = arr[i];                                   // Update max with the current element
+    return max;                                             // Return the maximum value
+}
+
+void counting_sort(int arr[], int n, int exp) {             // Using counting sort to sort the elements based on significant places
+    const int radix = 10;                                   // Base 10 for decimal numbers
+    int output[n];                                          // Output array to store sorted elements
+    int count[radix];                                       // Array to store the count of each digit
+
+
+    for (int i = 0; i < radix; i++)                         // Initialize count array
+        count[i] = 0;
+
+    for (int i = 0; i < n; i++)                             // Store count of occurrences in count[]
+        count[(arr[i] / exp) % radix]++;                    // Increment count for the corresponding digit
+
+    for (int i = 1; i < radix; i++)                         // Change count[i] so that count[i] contains the actual position of this digit in output[]
+        count[i] += count[i - 1];                           // Update count array to represent the cumulative count
+
+    for (int i = n - 1; i >= 0; i--) {                      // Build the output array
+        output[count[(arr[i] / exp) % radix] - 1] = arr[i]; // Place elements in output array based on count
+        count[(arr[i] / exp) % radix]--;                    // Decrement count for the corresponding digit
+    }
+
+    for (int i = 0; i < n; i++)                             // Copy the output array to arr[], so that arr[] contains sorted numbers according to current digit
+        arr[i] = output[i];                                 // Copy sorted elements back to the original array
+}
+
+void radix_sort(int arr[], int n) {                         // Radix Sort function
+
+    int max = get_max(arr, n);                              // Find the maximum number to determine the number of digits
+
+    for (int exp = 1; max / exp > 0; exp *= 10)             // Do counting sort for every digit from least significant digit to most significant digit
+        counting_sort(arr, n, exp);                         // Perform counting sort for each digit place (exp)
+}
+
+// Linear search algorithm
+void linear_search(int arr[], int n, va_list args) {          // Linear search algorithm to find the target number in the array
+    int target = va_arg(args, int);
+    for (int i = 0; i < n; i++) {                           // Loop through each element of the array
+        if (arr[i] == target) {                             // Check if the current element is equal to the target number
+            printf("Linear search:\nTarget number is: %d\nFound the number at index: %d\n", target,i);   // Print the index where the number is found
+            return;                                         // If found, exit the function
+        }
+    }
+    printf("Can't find the number in the array\n");         // If the loop finishes without finding the target, print a message
+}
+
+
+// Binary search algorithm
+void binary_search(int arr[], int n, va_list args) {            // Binary search algorithm to find the target number in the array
+    int target = va_arg(args, int);
+
+    int low = 0;
+    int high = n - 1;
+
+    while (low <= high) {                                       // Iterate until the search space is empty
+
+        int mid = low + (high - low) / 2;                       // Calculate the middle index of the search space
+        if (arr[mid] == target) {                               // Check if the middle element is the target
+            printf("Binary search:\nTarget number is: %d\nFound the number at index: %d\n", target, mid);     // Print the index where the number is found
+            return;                                             // Element found at index mid
+        } else if (arr[mid] < target) {                         // If the target is greater, search the right half
+            low = mid + 1;
+        } else {                                                // If the target is smaller, search the left half
+            high = mid - 1;
+        }
+    }
+
+    printf("Can't find the number in the array\n");             // If the loop finishes without finding the target, print a message
+}
+
+
+// Jump search algorithm
+void jump_search(int arr[], int n, va_list args) {                // Jump search algorithm to find the target number in the array
+    int target = va_arg(args, int);
+    int step = sqrt(n);                                         // Calculate the step size by taking the square root of the number of elements in the array
+
+    int prev_block = 0;                                         // Initialize the variable to store the index of the first element of the previous block
+    int curr_block = step;                                      // Initialize the variable to store the index of the first element of the current block
+
+    while (arr[curr_block - 1] < target && curr_block < n) {    // Search for the target number: while the last element of the current block is smaller than the target, and smaller than the number of elements,
+        prev_block = curr_block;                                // Update the previous block to the current block
+        curr_block += step;                                     // Increment the current block by the step size
+    }
+
+    for (int i = prev_block; i < curr_block && i < n; ++i) {    // Iterate through the elements of the previous block to find the target number
+        if (arr[i] == target) {                                 // If the element is equal to the target
+            printf("Jump search:\nTarget number is: %d\nFound the number at index: %d\n", target, i);       // Print out the index of the element
+            return;                                             // Exit the function
+        }
+    }
+    printf("Can't find the number in the array\n");             // If the loop finishes without finding the target, print a message
+}
+
+// Interpolation search algorithm
+void interpolation_search(int arr[], int n, va_list args) {                           // Interpolation search algorithm to find the target number in the array
+    int target = va_arg(args,int);
+    int low = 0;
+    int high = n - 1;
+
+    while (low <= high && target >= arr[low] && target <= arr[high]) {                          // While the low index is less than or equal to the high index, and the target is within the range of values in the array
+        int pos = low + ((double)(high - low) / (arr[high] - arr[low])) * (target - arr[low]);  // Calculate the position using interpolation formula
+        if (arr[pos] == target) {                                                               // If the element at the calculated position is equal to the target
+            printf("Interpolation search:\nTarget number is: %d\nFound the number at index: %d\n", target, pos);                                     // Print out the index of the element
+            return;                                                                             // Exit the function
+        } else if (arr[pos] < target) {                                                         // If the element at the calculated position is less than the target
+            low = pos + 1;                                                                      // Move the low index to the right of the calculated position
+        } else {                                                                                // If the element at the calculated position is greater than the target
+            high = pos - 1;                                                                     // Move the high index to the left of the calculated position
+        }
+    }
+    printf("Can't find the number in the array\n");                                             // If the loop finishes without finding the target, print a message
+}
+
+// Ternary search algorithm
+void ternary_search(int arr[], int n, va_list args) {     // Ternary search algorithm to find the target number in the array
+    int target = va_arg(args,int);
+    int low = 0;
+    int high = n - 1;
+
+    while (low <= high) {                                           // While the low index is less than or equal to the high index
+        int mid1 = low + (high - low) / 3;                          // Calculate the two midpoints
+        int mid2 = high - (high - low) / 3;
+
+        if (arr[mid1] == target) {                                  // If the element at mid1 is equal to the target
+            printf("Ternary search:\nTarget number is: %d\nFound the number at index: %d\n", target, mid1);        // Print out the index of the element
+            return;                                                 // Exit the function
+        }
+        if (arr[mid2] == target) {                                  // If the element at mid2 is equal to the target
+            printf("Ternary search:\nTarget number is: %d\nFound the number at index: %d\n", target, mid2);        // Print out the index of the element
+            return;                                                 // Exit the function
+        }
+        if (target < arr[mid1]) {                                   // If the target is less than the element at mid1
+            high = mid1 - 1;                                        // Update the high index to search in the lower portion
+        } else if (target > arr[mid2]) {                            // If the target is greater than the element at mid2
+            low = mid2 + 1;                                         // Update the low index to search in the upper portion
+        } else {                                                    // If the target is between mid1 and mid2
+            low = mid1 + 1;                                         // Update the low index to search in the middle portion
+            high = mid2 - 1;                                        // Update the high index to search in the middle portion
+        }
+    }
+
+    printf("Can't find the number in the array\n");                 // If the loop finishes without finding the target, print a message
+}
+
+// Random number generator for the array
+int get_random_number(int arr[], int n) {                   // Function to generate a random number from the array
+    srand((unsigned int)time(NULL));                        // Seed the random number generator with the current time
+    int target = rand() % n;                                // Generate a random index within the range of the array
+    printf("The target number is: %d\n\n", arr[target]);      // Print the target number
+    return arr[target];                                     // Return the random number from the array
+}
+
+
+void random_array(int arr[], int n) {                   // Random array function to generate an array of random numbers
+    srand(time(NULL));                                  // Seed for randomization
+    for (int k = 0; k < n; k++) {                       // Loop for iterating through the array
+        arr[k] = rand() % 1000000;                      // Generating random numbers within the range [0, 999999] and storing them in the array
+    }
+}
+
+
+// Function to print the elements of an array before sorting
+void print_before(int arr[], int n) {                   // Print out the list before sorting
+    int i;                                              // Declare the variable
+
+    for (i = 0; i < n; i++) {                           // Loop through the array elements
+        printf("%d, ", arr[i]);                         // Print out the array elements
+        if (i == n - 1) {                               // Check if the element is the last one
+            printf("%d //// END OF LIST", arr[i]);      // Print out something more after the last element
+        }
+    }
+}
+
+// Function to print the elements of an array after sorting
+void print_after(int arr[], int n) {                    // Print out the list after sorting
+    int j;                                              // Declare the variable
+
+    for (j = 0; j < n; j++) {                           // Loop through the array elements
+        printf("%d, ", arr[j]);                         // Print out the array elements
+        if (j == n - 1) {                               // Check if the element is the last one
+            printf("%d //// END OF LIST", arr[j]);      // Print out something more after the last element
+        }
+    }
+}
+
+
+// Global variables
+clock_t start_time, end_time;
+
+// Function to perform sorting and measure time / first function
+double measure_sorting_time_1(void (*sorting_function)(int arr[],int n), int arr[], int n, const char* sorting_name) {
+start_time = clock();
+sorting_function(arr,n);
+end_time = clock();
+
+double elapsed_time = (double)(end_time - start_time) / CLOCKS_PER_SEC;
+printf("Time taken for %s sort: %.6f seconds\n",sorting_name, elapsed_time);
+return elapsed_time;
+}
+
+// Function to perform sorting and measure time / second function
+double measure_sorting_time_2(void (*sorting_function)(int arr[],int left,int right), int arr[], int left, int right, const char* sorting_name) {
+start_time = clock();
+sorting_function(arr,left,right);
+end_time = clock();
+
+double elapsed_time = (double)(end_time - start_time) / CLOCKS_PER_SEC;
+printf("Time taken for %s sort: %.6f seconds\n",sorting_name, elapsed_time);
+return elapsed_time;
+}
+
+// Function to perform search algorithms and measure time / first function
+double search_time(void (*searching_function)(int arr[],int n, va_list args), int arr[], int n, const char* searching_name, ...) {
+    va_list args;
+    start_time = clock();
+    va_start(args,searching_name);
+    searching_function(arr,n,args);
+    va_end(args);
+    end_time = clock();
+
+    double elapsed_time = (double)(end_time - start_time) / CLOCKS_PER_SEC;
+    printf("Time taken for %s search: %.6f seconds\n\n",searching_name, elapsed_time);
+    return elapsed_time;
+}
+
+// Print mismatches of arrays if there is any. If empty, the arrays are matching perfectly
+void print_mismatches(int* arrays[], int num_of_arrays, int size_of_array) {    // Print header for the mismatches section
+    printf("(If any mismatches between array elements, it is listed out here:)\n");
+
+    for (int i = 0; i < size_of_array; i++) {                                   // Iterate over each index of the arrays
+        int value = arrays[0][i];                                               // Take the value from the first array as reference
+        int mismatch = 0;                                                       // Initialize flag for mismatch
+
+        for (int j = 1; j < num_of_arrays; j++) {                               // Compare value at index i of each array (except the first one) with the reference value
+            if (arrays[j][i] != value) {
+                mismatch = 1;
+                break;
+          }
+        }
+        if (mismatch) {                                                         // If a mismatch is detected
+            printf("No. of element: %d\n", i);                                  // Print the index of the element where the mismatch occurred
+            for (int j = 0; j < num_of_arrays; j++) {                           // Iterate over each array and print the value of the element at index i
+                printf("Mismatch element is from %s array & element is: %d\n",  // Determine the name of the algorithm corresponding to each array and print the element value
+                       (j == 0) ? "Bubble" :
+                       (j == 1) ? "Selection" :
+                       (j == 2) ? "Insertion" :
+                       (j == 3) ? "Shell" :
+                       (j == 4) ? "Merge" :
+                       (j == 5) ? "Heap" :
+                       (j == 6) ? "Shell" : "Radix", arrays[j][i]);
+            }
+                                                                // Print a newline to separate the output for different indices
+        }
+    }
+    printf("\n\n");
+}
+
+// Global variables
+int i, j, k, target;
+
+// Main function
+int main() {
+
+// Dynamic memory allocation for the arrays
+int* array_bubble = (int*)malloc(ArraySize * sizeof(int));
+int* array_selection = (int*)malloc(ArraySize * sizeof(int));
+int* array_insertion = (int*)malloc(ArraySize * sizeof(int));
+int* array_shell = (int*)malloc(ArraySize * sizeof(int));
+int* array_merge = (int*)malloc(ArraySize * sizeof(int));
+int* array_quick = (int*)malloc(ArraySize * sizeof(int));
+int* array_heap = (int*)malloc(ArraySize * sizeof(int));
+int* array_radix = (int*)malloc(ArraySize * sizeof(int));
+
+// Randomization of bubble arrays
+random_array(array_bubble, ArraySize);
+
+// Copy of bubble array to other arrays
+memcpy(array_selection,array_bubble, ArraySize * sizeof(int));
+memcpy(array_insertion,array_bubble, ArraySize * sizeof(int));
+memcpy(array_shell,array_bubble, ArraySize * sizeof(int));
+memcpy(array_merge,array_bubble, ArraySize * sizeof(int));
+memcpy(array_quick,array_bubble, ArraySize * sizeof(int));
+memcpy(array_heap,array_bubble, ArraySize * sizeof(int));
+memcpy(array_radix,array_bubble, ArraySize * sizeof(int));
+
+// Measure time for each sorting algorithm
+double sorting_times[] = {
+measure_sorting_time_1(bubble_sort, array_bubble, ArraySize, "Bubble"),
+measure_sorting_time_1(selection_sort, array_selection, ArraySize, "Selection"),
+measure_sorting_time_1(insertion_sort, array_insertion, ArraySize, "Insertion"),
+measure_sorting_time_1(heap_sort, array_heap, ArraySize, "Heap"),
+measure_sorting_time_1(shell_sort, array_shell, ArraySize, "Shell"),
+measure_sorting_time_1(radix_sort, array_radix, ArraySize, "Radix"),
+measure_sorting_time_2(merge_sort, array_merge, 0, ArraySize-1, "Merge"),
+measure_sorting_time_2(quick_sort, array_quick, 0, ArraySize-1, "Quick")
+};
+
+// Print out the fastest sorting algorithm
+double fastest_sorting_time = DBL_MAX;
+const char *fastest_sorting_algorithm = NULL;
+const char *sorting_names[] = {"Bubble", "Selection", "Insertion", "Heap", "Shell", "Radix", "Merge", "Quick"};
+
+for (i = 0; i < sizeof(sorting_times) / sizeof(sorting_times[0]); i++)
+    if (sorting_times[i] < fastest_sorting_time) {
+        fastest_sorting_time = sorting_times[i];
+        fastest_sorting_algorithm = sorting_names[i];
+    }
+
+printf("\nThe fastest sorting algorithm is: %s sort - time taken: %.6f\n", fastest_sorting_algorithm, fastest_sorting_time);
+
+// Print mismatches if there is any between the array elements
+int *sorting_array[] = {array_bubble, array_selection, array_insertion, array_shell, array_merge, array_quick, array_heap, array_radix};
+int num_of_arrays = sizeof(sorting_array) / sizeof(sorting_array[0]);
+print_mismatches(sorting_array, num_of_arrays, ArraySize);
+
+
+// Generate a random number from the existing arrays that need to be searched
+target = get_random_number(array_bubble, ArraySize);
+
+// Measure time for each search algorithm
+double searching_times[] = {
+search_time(linear_search, array_bubble, ArraySize, "Linear", target),
+search_time(binary_search, array_bubble, ArraySize, "Binary", target),
+search_time(jump_search, array_bubble, ArraySize, "Jump", target),
+search_time(interpolation_search, array_bubble, ArraySize, "Interpolation", target),
+search_time(ternary_search, array_bubble, ArraySize, "Ternary", target)
+};
+
+// Print out the fastest searching algorithm
+double fastest_searching_time = DBL_MAX;
+const char *fastest_searching_algorithm = NULL;
+const char *searching_names[] = {"Linear", "Binary", "Jump", "Interpolation", "Ternary"};
+
+for (i = 0; i < sizeof(searching_times) / sizeof(searching_times[0]); i++)
+    if (searching_times[i] < fastest_searching_time) {
+        fastest_searching_time = searching_times[i];
+        fastest_searching_algorithm = searching_names[i];
+    }
+
+printf("\nThe fastest searching algorithm is: %s search - time taken: %.6f\n", fastest_searching_algorithm, fastest_searching_time);
+
+// Freeing up the memory
+    free(array_bubble);
+    free(array_selection);
+    free(array_insertion);
+    free(array_shell);
+    free(array_merge);
+    free(array_quick);
+    free(array_heap);
+    free(array_radix);
+
+    return 0;
+}
